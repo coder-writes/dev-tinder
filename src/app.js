@@ -1,87 +1,117 @@
 const express = require("express");
-const {adminAuth,userAuth} = require("./middlewares/auth.js");
+const {connectDb} = require("./config/database")
 const app = express();
+const {User} = require("./models/user")
 
+app.use(express.json());
 
-const cb2 = function(req,res,next){
-    console.log("this is the second callback");
-
-    // next();
-    res.send("Hello This response has been sent from the second callback function");
-}
-const cb4 = function(res,res){
-    console.log("the cb4 is envoked");
-}
-const cb3  = function(req,res,next){
-    console.log("this is third callback");
-    next();
-    // res.send("Hello , this response has been sent from the third callback function");
-}
-const cb1 = function(req,res,next){
-    console.log("this is first cb1");
-    next();
-    // res.send("Hello , The response has been sent from the first callback funtion");
-}
-
-
-
-app.use("/test",cb1,[cb3,cb2],cb4);
-
-app.get("/user/:userID/:name/:age",userAuth,(req,res) =>{
-    console.log(req.params);
-    console.log(req.query);
-    res.send({
-        "fName": "Rishi",
-        "lName": "Verma",
-        "age": 45,
-        "phone no": 9453127915,
-    })
+app.post("/signup", async (req, res) => {
+    const userData = req.body;
+    try {
+        const user = new User(userData);
+        await user.save();
+        res.status(201).send("User added successfully");
+        console.log("User added successfully");
+    } catch (err) {
+        if (err.code === 11000) {
+            res.status(400).send("Duplicate entry detected: Email or phone number already exists");
+            console.log("Duplicate entry error:", err.message);
+        } else {
+            res.status(500).send("Something went wrong: " + err.message);
+            console.error("Error saving user:", err);
+        }
+    }
 });
 
-// app.post("/user",(req,res)=>{
-//     // console.log(req.pa)
 
-//     console.log("data is succesfully saved to the database");
-//     res.send("Data is Sucessfully saved to the db");
-// })
-
-// app.delete("/user",(req,res)=>{
-//     console.log("Data is Deleted");
-//     res.send("Data is Sucessfully Deleted from the dataBase");
-// })
-
-// // if keep adding the code of the authorization for the every request then the code will be meshy here the role of teh middlwares comes we will make a middleware function to ask for the authorization for all the incoming request on the admin portal
-
-
-// app.use("/admin",adminAuth);
-// app.get("/admin/getAllData",(req,res)=>{
-//     // first authorise the admin to give him access get all the data of the user
-//     // const token = "passwod"
-//     // const isAdminAuthorised = token === "password";
-//     // if(isAdminAuthorised){
-//         res.send("All the data has been sent");
-//     // }
-//     // else{
-//     //     res.status(401).send("Admin is not authorized")
-//     // }
-// })
-
-// app.delete("/admin/deleteAUser",(req,res)=>{
-//     //first authorise the admin to give him access delete a user
-//     res.send("The user has been deleted");
-// })
-
-// app.post("/admin/addAUser",(req,res)=>{
-//     //first authorise the admin to give him access add a user
-//     res.send("A user has been added");
-// })
-
-// app.get("/login",(req,res)=>{
-//     res.send("The login Page is here");
-// })
-
-
-
-app.listen(3000,()=>{
-    console.log(`Server is running on the localhost http://localhost:3000/`);
+//to find a user with email address
+app.get("/user",async(req,res)=>{
+    const documnetToFind = (req.body);
+    try{
+        let result = await User.find(documnetToFind);
+        if(result==0){
+            res.send(`No user with the given filters is found`);
+        }
+        else{
+            res.send(result);
+        }
+    }
+    catch(err){
+        res.status(500).send("Something Went Wrong");
+    }
 })
+
+
+
+// feed api
+app.get("/feed",async(req,res)=>{
+    const documnetToFind = ({});
+    try{
+        let result = await User.find(documnetToFind);
+        if(result==0){
+            res.send("No user with given filters is present");
+        }
+        else{
+            res.send(result);
+        }
+    }
+    catch(errr){
+        res.status(401).send("Something Went Wrong");
+        console.log("something went wrong");
+    }
+})
+
+
+//deleting a  user from the database
+app.delete("/user", async (req,res) => {
+    const documnetTodelete = req.body._id;
+    try{
+        const result = await User.findByIdAndDelete(documnetTodelete);
+        res.send("The user has been deleted");
+    }
+    catch(err){
+        res.status(401).send("Something Went Wrong");
+        console.log("something went wrong");
+    }
+})
+
+//update a user on the data base with the userId
+app.patch("/user", async (req,res)=>{
+    const documentToUpdate = req.body.userId;
+    const updateRequired = req.body;
+    try {
+        console.log(documentToUpdate);
+        console.log(updateRequired);
+        const result = await User.findOneAndUpdate({_id: documentToUpdate}, {$set: updateRequired}, {new: true});
+        if (result) {
+            res.send("Document is Updated Successfully");
+        } else {
+            res.status(404).send("Document not found");
+        }
+    } catch (err) {
+        res.status(500).send("Something Went Wrong");
+    }
+})
+
+app.patch("/user/email", async(req,res)=>{
+    const documentToUpdate = req.body.oldEmail;
+    const requiredUpdate = req.body;
+    try{
+        console.log(documentToUpdate);
+        const result = await User.findOneAndUpdate({"email": documentToUpdate},requiredUpdate);
+        if(result){
+            res.send("Document is updated Sucessfully");
+        }
+        else{
+            res.status(404).send("Document Not found");
+        }
+    }catch(err){
+        res.status(501).send("Seomthing Went wrong");
+    }
+})
+connectDb().then(()=>{
+    console.log("connection to the database is successful");
+    app.listen(7777,()=>console.log("the Server is running on the port http://localhost:7777"));
+}).catch((err)=>{
+    console.error("Database cannnot be connected");
+});
