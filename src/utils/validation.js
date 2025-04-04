@@ -1,5 +1,22 @@
 const validator = require('validator');
 
+const validateNewPassword = (req) => {
+    if (!req.body || !req.body.newPassword) {
+        throw new Error("Password is missing");
+    }
+    const { newPassword } = req.body;
+    try{
+        if (!validator.isStrongPassword(newPassword)) {
+            throw new Error("The password is not Strong Enough");
+        }
+        else{
+            return true;
+        }
+    }
+    catch (err){
+        return false;
+    }
+};
 const validateSignupData = (req) =>{
     const {fullName,email,phoneNo,password} = req.body;
 
@@ -18,7 +35,25 @@ const validateSignupData = (req) =>{
         }
 };
 
+const validateProfileEditData = (req) =>{
+    const allowedEdits = [
+        "fullName",
+        "age",
+        "gender",
+        "about",
+        "hobbies",
+        "photoUrl",
+    ];
+
+    const isEditAllowed = Object.keys(req.body).every((field) => allowedEdits.includes(field));
+
+
+    return isEditAllowed;
+}
+
 
 module.exports = {
-    validateSignupData
+    validateSignupData,
+    validateProfileEditData,
+    validateNewPassword,
 }
