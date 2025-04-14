@@ -7,9 +7,12 @@ const {User} = require("../models/user")
 const bcrypt = require('bcrypt'); 
 
 profileRouter.get("/profile/view", userAuth , async (req,res) => {
-    const user = req.user;    
-    console.log(user);
-    res.send(user);
+    try {
+        const user = req.user;
+        res.send(user);
+      } catch (err) {
+        res.status(400).send("ERROR : " + err.message);
+      }
 })
 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
@@ -20,19 +23,13 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
         }
 
         const loggedInUser = req.user;
-        const updates = req.body;
 
         // Update user profile with new data using updateOne method
-        const updatedUser = await User.updateOne({ _id: loggedInUser._id }, updates, { new: true });
-
-        if (!updatedUser) {
-            throw new Error("User not found");
-        }
-        console.log(loggedInUser);
-        console.log(updatedUser);
+        Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
+        await loggedInUser.save();
         res.json({
-            message: `${loggedInUser.fullName}, your profile updated successfully`,
-            data: updatedUser,
+            message: `${loggedInUser.firstName}, your profile updated successfully`,
+            data: loggedInUser,
         });
     } catch (err) {
         res.status(400).send("ERROR : " + err.message);

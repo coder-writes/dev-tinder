@@ -54,7 +54,7 @@ requestRouter.post(
     
     
             res.json({
-              message: req.user.fullName + " is " + status + " in " + toUser.fullName,
+              message: req.user.firstName + " is " + status + " in " + toUser.firstName,
               data  
             })
         }

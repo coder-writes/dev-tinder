@@ -5,13 +5,22 @@ const jwt  = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
-    fullName: {
+    firstName: {
         type: String,
         required: true,
         minlength: 2,
         maxLength: 50,
-        match: [/^[a-zA-Z\s'-.]+$/, 'Please enter a valid full name'],
+        match: [/^[a-zA-Z\s'-.]+$/, 'Please enter a valid First name'],
         trim: true,
+    },
+    lastName:{
+        type: String,
+        required: true,
+        minlength: 2,
+        maxLength: 50,
+        match: [/^[a-zA-Z\s'-.]+$/, 'Please enter a valid last name'],
+        trim: true,
+
     },
     email:{
         type: String,

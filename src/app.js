@@ -9,8 +9,10 @@ const cookies = require('cookie-parser');
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 const { userAuth } = require("./middlewares/auth");
+const cors = require("cors");
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 
 const authRouter  =    require("./routes/auth");
@@ -22,6 +24,7 @@ app.use("/",authRouter);
 app.use("/",profileRouter);
 app.use("/",requestRouter);
 app.use("/",userRouter);
+
 
 
 connectDb().then(() => {

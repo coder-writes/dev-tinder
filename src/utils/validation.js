@@ -18,16 +18,15 @@ const validateNewPassword = (req) => {
     }
 };
 const validateSignupData = (req) =>{
-    const {fullName,email,phoneNo,password} = req.body;
+    const {firstName,lastName,emailId,phoneNo,password} = req.body;
 
-        if(!fullName){
-            
-            throw new Error("Name is not Valid");
+        if(!firstName || !lastName || !emailId || !phoneNo || !password){
+            throw new Error("Please fill all the fields");
         }
         else if(!validator.isMobilePhone(phoneNo)){
             throw new Error("Phone number is not valid");
         }
-        else if(!validator.isEmail(email)){
+        else if(!validator.isEmail(emailId)){
             throw new Error("Email address is not valid");
         }
         else if(!validator.isStrongPassword(password)){
@@ -37,7 +36,8 @@ const validateSignupData = (req) =>{
 
 const validateProfileEditData = (req) =>{
     const allowedEdits = [
-        "fullName",
+        "firstName",
+        "lastName",
         "age",
         "gender",
         "about",
@@ -46,8 +46,7 @@ const validateProfileEditData = (req) =>{
     ];
 
     const isEditAllowed = Object.keys(req.body).every((field) => allowedEdits.includes(field));
-
-
+    
     return isEditAllowed;
 }
 
