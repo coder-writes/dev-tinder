@@ -12,7 +12,14 @@ const { userAuth } = require("./middlewares/auth");
 const cors = require("cors");
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+const dotenv = require("dotenv");
+dotenv.config();
+app.use(cors(
+    {
+        origin: "http://localhost:5173",
+        credentials: true,
+    }
+));
 
 
 const authRouter  =    require("./routes/auth");
@@ -27,9 +34,10 @@ app.use("/",userRouter);
 
 
 
+const port = process.env.PORT || 7777;
 connectDb().then(() => {
     console.log("connection to the database is successful");
-    app.listen(7777, () => console.log("the Server is running on the port http://localhost:7777"));
+    app.listen(port, () => console.log(`The server is running on the port http://localhost:${port}`));
 }).catch((err) => {
-    console.error("Database cannnot be connected: " + err.message);
+    console.error("Database cannot be connected: " + err.message);
 });

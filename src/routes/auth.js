@@ -53,7 +53,7 @@ authRouter.post("/login", async (req,res) => {
             res.status(401).send("Invalid Credentials");
         }
     }catch(err){
-        res.send("Error: " + err.message);
+        res.status(401).send("Error: " + err.message);
 
     }
 })
