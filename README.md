@@ -41,7 +41,7 @@ DevTinder is a revolutionary platform designed specifically for developers to fi
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/devtinder.git
+   git clone https://github.com/coder-writes/devtinder.git
    cd devtinder
    ```
 
@@ -164,9 +164,8 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Author
 
 **Your Name**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- Email: your.email@example.com
+- GitHub: [@coder-writes](https://github.com/coder-writes)
+- LinkedIn: [rishi-verma-sde](https://linkedin.com/in/rishi-verma-sde)
 
 ---
 
