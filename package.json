@@ -2,10 +2,10 @@
   "name": "devtinder",
   "version": "1.0.0",
   "description": "This is the Tinder of the Devlopers",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "keywords": [],
   "author": "",
