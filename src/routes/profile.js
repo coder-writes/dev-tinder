@@ -3,7 +3,8 @@ const profileRouter = express.Router();
 const { userAuth } = require("../middlewares/auth");
 const { validateSignupData,validateNewPassword} = require('../utils/validation');
 const { validateProfileEditData } = require('../utils/validation');
-const {User} = require("../models/user")
+const {User} = require("../models/user");
+const {GoogleUser} = require("../models/googleUser");
 const bcrypt = require('bcrypt'); 
 
 profileRouter.get("/profile/view", userAuth , async (req,res) => {
@@ -17,21 +18,50 @@ profileRouter.get("/profile/view", userAuth , async (req,res) => {
 
 profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
     try {
+        console.log("Profile edit request body:", req.body);
+        console.log("User type:", req.userType);
+        console.log("User ID:", req.user._id);
+        
         const isValid = validateProfileEditData(req);
         if (!isValid) {
             throw new Error("Invalid Edit Request");
         }
 
         const loggedInUser = req.user;
+        const userType = req.userType;
 
-        // Update user profile with new data using updateOne method
-        Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]));
-        await loggedInUser.save();
+        // Save based on user type
+        let updatedUser;
+        if (userType === 'google') {
+            console.log("Updating Google user with data:", req.body);
+            // For Google users, update in GoogleUser collection
+            updatedUser = await GoogleUser.findByIdAndUpdate(
+                loggedInUser._id,
+                req.body,
+                { new: true, runValidators: true }
+            );
+            console.log("Updated Google user:", updatedUser);
+        } else {
+            console.log("Updating regular user with data:", req.body);
+            // For regular users, update in User collection
+            updatedUser = await User.findByIdAndUpdate(
+                loggedInUser._id,
+                req.body,
+                { new: true, runValidators: true }
+            );
+            console.log("Updated regular user:", updatedUser);
+        }
+
+        if (!updatedUser) {
+            throw new Error("User not found");
+        }
+
         res.json({
-            message: `${loggedInUser.firstName}, your profile updated successfully`,
-            data: loggedInUser,
+            message: `${updatedUser.firstName}, your profile updated successfully`,
+            data: updatedUser,
         });
     } catch (err) {
+        console.error("Profile edit error:", err);
         res.status(400).send("ERROR : " + err.message);
     }
 });

@@ -2,8 +2,10 @@ const express = require('express');
 const bcrypt = require('bcrypt'); 
 const  {User}  = require('../models/user');
 const {validateSignupData} = require("../utils/validation");
-
+const { googleAuth } = require("../controllers/authControllers");
 const authRouter = express.Router();
+
+authRouter.get("/google", googleAuth);
 
 authRouter.post("/signup", async (req, res) => {
     const {firstName,lastName,emailId,phoneNo,password,age,gender,about,hobbies} = req.body;
@@ -15,7 +17,6 @@ authRouter.post("/signup", async (req, res) => {
             firstName,
             lastName,
             email: emailId,
-            phoneNo,
             password: hashedPassword
         });
         const savedUser = await user.save();
@@ -46,11 +47,36 @@ authRouter.post("/login", async (req,res) => {
         const isPasswordValid = await bcrypt.compare(password,hashedPassword);
         if(isPasswordValid){
             const token = await result.getJWT();
-            res.cookie("token", token);
-            res.send(result);
+            
+            // Set cookie with proper options
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+            
+            // Send user data without password
+            const userResponse = {
+                _id: result._id,
+                firstName: result.firstName,
+                lastName: result.lastName,
+                email: result.email,
+                photoUrl: result.photoUrl,
+                about: result.about,
+                hobbies: result.hobbies,
+                age: result.age,
+                gender: result.gender,
+                phoneNo: result.phoneNo
+            };
+            
+            res.json({
+                message: "Login successful",
+                user: userResponse
+            });
         
         }else{
-            res.status(401).send("Invalid Credentials");
+            res.status(401).json({error: "Invalid Credentials"});
         }
     }catch(err){
         res.status(401).send("Error: " + err.message);
@@ -60,10 +86,14 @@ authRouter.post("/login", async (req,res) => {
 
 authRouter.post("/logout", async (req,res) => {
     try{
-        res.clearCookie("token");    
-        res.send("User is logged out Successfully");
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
+        });    
+        res.json({message: "User logged out successfully"});
     }catch(err){
-        res.send("Error: " + err.message);
+        res.status(500).json({error: "Error during logout: " + err.message});
     }
 })
 module.exports = authRouter;
