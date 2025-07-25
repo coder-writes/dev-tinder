@@ -36,7 +36,8 @@ const userSchema = new Schema({
          }
     },
     phoneNo:{
-        type: String,
+        type: String, 
+        required: true,
         unique: true,
         minLength: 10,
         maxLength: 10,
@@ -58,14 +59,14 @@ const userSchema = new Schema({
     gender:{
         type: String,
         validate(value){
-            if(!["male", "female", "other" ,"Prefer Not to Say"].includes(value)){
+            if(!["male", "female", "others"].includes(value)){
                 throw new Error('Gender Data is not allowed');
             }
         }
     },
     about:{
         type: String,
-        default: "Eat, Sleep, Code, Repeat",
+        default: "Hey, there I am Using Whatsapp",
     },
     photoUrl:{
         type: String,
@@ -90,7 +91,7 @@ const userSchema = new Schema({
 userSchema.methods.getJWT = async function() {
     const user = this;
     const token = await jwt.sign({_id: user._id},
-        process.env.JWT_SECRET || "Rishi@123$567*90",{
+        "Rishi@123$567*90",{
         expiresIn: "7d",
     });
 
