@@ -36,9 +36,7 @@ const userSchema = new Schema({
          }
     },
     phoneNo:{
-        type: String, 
-        required: true,
-        unique: true,
+        type: String,
         minLength: 10,
         maxLength: 10,
         validate(value){

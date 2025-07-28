@@ -6,7 +6,7 @@ const {validateSignupData} = require("../utils/validation");
 const authRouter = express.Router();
 
 authRouter.post("/signup", async (req, res) => {
-    const {firstName,lastName,emailId,phoneNo,password,age,gender,about,hobbies} = req.body;
+    const {firstName,lastName,emailId,password} = req.body;
     // first we have to validate the userData
     try {
         validateSignupData(req);
@@ -15,7 +15,6 @@ authRouter.post("/signup", async (req, res) => {
             firstName,
             lastName,
             email: emailId,
-            phoneNo,
             password: hashedPassword
         });
         const savedUser = await user.save();

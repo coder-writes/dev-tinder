@@ -13,6 +13,8 @@ const userAuth = async (req,res,next) => {
         if(!token){
             return res.status(401).send("Unauthorized: Please Login First");
         }
+        // console.log("Token received:", token);
+        // console.log("JWT_SECRET:", JWT_SECRET);
         const decodedObj = await jwt.verify(token, JWT_SECRET);
         const {_id} = decodedObj;
         const user = await User.findById(_id);

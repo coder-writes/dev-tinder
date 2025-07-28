@@ -18,13 +18,10 @@ const validateNewPassword = (req) => {
     }
 };
 const validateSignupData = (req) =>{
-    const {firstName,lastName,emailId,phoneNo,password} = req.body;
+    const {firstName,lastName,emailId,password} = req.body;
 
-        if(!firstName || !lastName || !emailId || !phoneNo || !password){
+        if(!firstName || !lastName || !emailId || !password){
             throw new Error("Please fill all the fields");
-        }
-        else if(!validator.isMobilePhone(phoneNo)){
-            throw new Error("Phone number is not valid");
         }
         else if(!validator.isEmail(emailId)){
             throw new Error("Email address is not valid");
