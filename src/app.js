@@ -14,12 +14,13 @@ app.use(express.json());
 app.use(cookieParser());
 const dotenv = require("dotenv");
 dotenv.config();
-app.use(cors(
-    {
-        origin: "http://localhost:5173",
-        credentials: true,
-    }
-));
+app.use(cors({
+    origin: [
+    "http://localhost:5173",
+    "https://dev-tinder-ax9m.onrender.com"
+  ],
+    credentials: true,
+}));
 
 
 const authRouter  =    require("./routes/auth");

@@ -11,7 +11,7 @@ const userAuth = async (req,res,next) => {
     try{
         const {token} = req.cookies;
         if(!token){
-            return res.status(401).send("Unauthorized: Please Login First");
+            return res.status(401).send("Unauthorized: token not provided");
         }
         // console.log("Token received:", token);
         // console.log("JWT_SECRET:", JWT_SECRET);

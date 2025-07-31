@@ -45,7 +45,11 @@ authRouter.post("/login", async (req,res) => {
         const isPasswordValid = await bcrypt.compare(password,hashedPassword);
         if(isPasswordValid){
             const token = await result.getJWT();
-            res.cookie("token", token);
+            res.cookie("token", token ,{
+                httpOnly: true,
+                secure: true,
+                sameSite: "None",
+            });
             res.send(result);
         
         }else{
