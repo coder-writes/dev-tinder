@@ -16,7 +16,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 app.use(cors({
     origin: [
-    "https://dev-tinder-frontend-main.vercel.app/",
+    "https://dev-tinder-frontend-main.vercel.app",
     "http://localhost:5173",
     "https://dev-tinder-ax9m.onrender.com"
   ],
