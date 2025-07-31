@@ -18,7 +18,9 @@ app.use(cors({
     origin: [
     "https://dev-tinder-frontend-main.vercel.app",
     "http://localhost:5173",
-    "https://dev-tinder-ax9m.onrender.com"
+    "https://dev-tinder-ax9m.onrender.com",
+    "www.devtinder.engineer",
+    "https://www.devtinder.engineer"
   ],
     credentials: true,
 }));
