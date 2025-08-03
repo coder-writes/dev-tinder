@@ -20,7 +20,8 @@ app.use(cors({
     "http://localhost:5173",
     "https://dev-tinder-ax9m.onrender.com",
     "www.devtinder.engineer",
-    "https://www.devtinder.engineer"
+    "https://www.devtinder.engineer",
+    "https://legendary-waffle-r4rpvxgr79vvcx5pw-5173.app.github.dev"
   ],
     credentials: true,
 }));
