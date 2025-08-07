@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "This is the Tinder of the Devlopers",
   "main": "index.js",
+    "type": "commonjs",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "server": "nodemon server.js",
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
