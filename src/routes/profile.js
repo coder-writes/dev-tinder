@@ -45,7 +45,6 @@ profileRouter.patch("/profile/password/forgot",userAuth, async(req,res)=>{
             throw new Error("The Password is no Strong Enough");
         }
         else{
-
             const loggedInUser = req.user;
             const {_id} = loggedInUser;
             const result = await User.findById(_id);
